@@ -1,0 +1,66 @@
+#include "services.fcl"
+#include "CORSIKAGen.fcl"
+#include "G4Gen.fcl"
+#include "ReadoutSim.fcl"
+#include "ImprovedTransport.fcl"
+#include "OccupiedSpillFilter.fcl"
+#include "Metadata.fcl"
+#include "CalHit.fcl"
+#include "Slicer4D.fcl"
+
+
+process_name: CORSIKACosmics
+
+services: {
+  TFileService:          { fileName: "corsika_cosmics_hist.root" closeFileFast: false }
+  RandomNumberGenerator: {}
+  scheduler:             { wantTracer: true wantSummary: true }
+  @table::standard_services
+}
+
+services.Geometry: @local::fd_geo
+
+source: {
+  module_type: EmptyEvent
+  firstRun:    1000001
+  firstSubRun: 1
+  firstEvent:  1
+}
+
+physics: {
+ producers: {
+   generator: @local::standard_CORSIKAGen_protons
+   geantgen: @local::standard_geant4
+   photrans: @local::standard_photrans
+   daq: @local::standard_rsim
+   calhit: @local::standard_calhit
+   slicer: @local::standard_slicer4d
+   rns: { module_type: "RandomNumberSaver" }
+ }
+
+ filters: {
+   occupied:  @local::standard_occupiedspillfilter
+ }
+
+ analyzers: {
+   metadata: @local::standard_metadata
+ }
+
+ simulate: [ generator, geantgen, photrans, daq, rns, occupied, calhit, slicer ]
+ stream1:  [ metadata, out1 ]
+
+ trigger_paths: [ simulate ]
+ end_paths:     [ stream1 ]
+}
+
+outputs:
+{
+ out1:
+ {
+   module_type: RootOutput
+   fileName:    "corsika_cosmics.root"
+   SelectEvents:[ simulate ]
+ }
+}
+
+physics.producers.daq.fd.ForceGain: 140

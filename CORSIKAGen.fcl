@@ -1,0 +1,31 @@
+BEGIN_PROLOG
+
+standard_CORSIKAGen_protons: {
+ module_type:          "CORSIKAGen"
+ SampleTime:           0.55e-3               #integration time in seconds
+ TimeOffset:           0                     #time in seconds before a spill to begin the interactions, -1.6e-3 (TPC Trig. offset) - 0.2e-3 (g4 rise time)
+ ProjectToHeight:      1000                  #height to which particles are projected [cm]
+ ShowerInputFiles:     [ "/pnfs/nova/persistent/users/jhewes15/corsika_flux_files/sqShowers/p_showers_*.db" ]   #list of sqlite dbs with corsika showers
+ ShowerFluxConstants:  [ 1.8e4 ]             #list of flux constants per shower file
+ ShowerAreaExtension:  1000                  # amount to extend the shower area beyond the cryo dimensions
+ RandomXZShift:        1000                  # amount to randomly shift shower start point in x & z [cm]
+ IsBigBoxUsed:         true                  # Using NOvA big box
+}
+
+standard_CORSIKAGen_CMC: {
+ module_type:          "CORSIKAGen"
+ SampleTime:           7.05e-3               #integration time in seconds
+ TimeOffset:           -3.856e-3             #time in seconds before a spill to begin the interactions, -1.6e-3 (TPC Trig. offset) - 0.2e-3 (g4 rise time)
+ ProjectToHeight:      39000                  #height to which particles are projected [cm]
+ ShowerInputFiles:     [ "/pnfs/nova/persistent/users/jhewes15/corsika_flux_files/sqShowers/p_showers_*.db",
+                         "/pnfs/nova/persistent/users/jhewes15/corsika_flux_files/sqShowers/He_showers_*.db",
+                         "/pnfs/nova/persistent/users/jhewes15/corsika_flux_files/sqShowers/N_showers_*.db",
+                         "/pnfs/nova/persistent/users/jhewes15/corsika_flux_files/sqShowers/Mg_showers_*.db",
+                         "/pnfs/nova/persistent/users/jhewes15/corsika_flux_files/sqShowers/Fe_showers_*.db"] #list of sqlite dbs with corsika showers
+ ShowerFluxConstants:  [ 1.72e4, 9.2e3, 6.2e3, 9.2e3, 6.2e3] #list of flux constants per shower file
+ ShowerAreaExtension:  1000                  #amount to extend the shower area beyond the cryo dimensions
+ RandomXZShift:        1000                  #amount to randomly shift shower start point in x & z [cm]
+ IsBigBoxUsed:         true                  # Using NOvA big box
+}
+
+END_PROLOG
